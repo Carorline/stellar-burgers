@@ -1,10 +1,11 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
 import {
   clearOrder,
+  createOrder,
   getConstructorItems,
   getOrderModalData,
   getOrderRequest
@@ -21,7 +22,16 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+
+    const order: string[] = [
+      constructorItems.bun?._id,
+      ...constructorItems.ingredients.map((ingredient) => ingredient._id),
+      constructorItems.bun?._id
+    ];
+
+    dispatch(createOrder(order));
   };
+
   const closeOrderModal = () => {
     dispatch(clearOrder());
     navigate('/');
