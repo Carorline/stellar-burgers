@@ -4,7 +4,8 @@ import { BurgerConstructorElementProps } from './type';
 import { useDispatch } from 'react-redux';
 import {
   deleteIngredient,
-  moveDownIngredient
+  moveDownIngredient,
+  moveUpIngredient
 } from '../../services/burgerConstructorSlice';
 
 export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
@@ -16,7 +17,7 @@ export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
     };
 
     const handleMoveUp = () => {
-      dispatch(moveDownIngredient(index - 1));
+      dispatch(moveUpIngredient(index));
     };
 
     const handleClose = () => {
