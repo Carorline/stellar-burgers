@@ -1,12 +1,11 @@
-import { getFeedsApi, getOrderByNumberApi } from '@api';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getFeedsApi, getOrderByNumberApi, getOrdersApi } from '@api';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
 
 export type TStateFeed = {
   orders: TOrder[];
   total: number;
   totalToday: number;
-  orderModal: TOrder | null;
   loading: boolean;
   error: null | string | undefined;
 };
@@ -15,7 +14,6 @@ const initialState: TStateFeed = {
   orders: [],
   total: 0,
   totalToday: 0,
-  orderModal: null,
   loading: false,
   error: null
 };
@@ -25,15 +23,11 @@ export const getFeeds = createAsyncThunk('feeds/getFeeds', async () => {
   return response;
 });
 
-export const getOrderByNumber = createAsyncThunk(
-  'orders/getOrderByNumber',
-  async (number: number, { rejectWithValue }) => {
-    try {
-      const response = await getOrderByNumberApi(number);
-      return response;
-    } catch (error) {
-      return rejectWithValue('Error feed data');
-    }
+export const getProfileOrders = createAsyncThunk(
+  'feeds/getProfileOrders',
+  async () => {
+    const data = await getOrdersApi();
+    return data;
   }
 );
 
@@ -57,17 +51,20 @@ export const feedSlice = createSlice({
         state.total = action.payload.total;
         state.totalToday = action.payload.totalToday;
       })
-      .addCase(getOrderByNumber.pending, (state) => {
+      .addCase(getProfileOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getOrderByNumber.fulfilled, (state, action) => {
+      .addCase(
+        getProfileOrders.fulfilled,
+        (state, action: PayloadAction<TOrder[]>) => {
+          state.loading = false;
+          state.orders = action.payload;
+        }
+      )
+      .addCase(getProfileOrders.rejected, (state, action) => {
         state.loading = false;
-        state.orderModal = action.payload.orders[0];
-      })
-      .addCase(getOrderByNumber.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error.message || 'Не удалось загрузить заказы';
       });
   },
   selectors: {
@@ -75,8 +72,7 @@ export const feedSlice = createSlice({
     getTotalOrders: (state) => state.total,
     getTotalToday: (state) => state.totalToday,
     getLoading: (state) => state.loading,
-    getError: (state) => state.error,
-    selectOrderModal: (state) => state.orderModal
+    getError: (state) => state.error
   }
 });
 

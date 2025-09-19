@@ -11,18 +11,17 @@ import {
 import { deleteCookie, setCookie } from '../utils/cookie';
 import { TUser } from '@utils-types';
 
-// Этот слайс управляет аутентификацией и данными пользователя
 export type UserState = {
   user: TUser | null;
   isAuthChecked: boolean;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
 };
 
 const initialState: UserState = {
   user: null,
   isAuthChecked: false,
-  loading: false,
+  isLoading: false,
   error: null
 };
 
@@ -52,7 +51,7 @@ export const logoutUser = createAsyncThunk('user/logout', async () => {
   localStorage.removeItem('refreshToken');
 });
 
-export const fetchUser = createAsyncThunk('user/fetch', async () => {
+export const getUser = createAsyncThunk('user/fetch', async () => {
   const res = await getUserApi();
   return res.user;
 });
@@ -76,55 +75,55 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(
         registerUser.fulfilled,
         (state, action: PayloadAction<TUser>) => {
-          state.loading = false;
+          state.isLoading = false;
           state.user = action.payload;
         }
       )
       .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.error.message || 'Ошибка регистрации';
       })
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.loading = false;
+        state.isLoading = false;
         state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.error.message || 'Ошибка авторизации';
       })
-      .addCase(fetchUser.pending, (state) => {
-        state.loading = true;
+      .addCase(getUser.pending, (state) => {
+        state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.loading = false;
+      .addCase(getUser.fulfilled, (state, action: PayloadAction<TUser>) => {
+        state.isLoading = false;
         state.user = action.payload;
         state.isAuthChecked = true;
       })
-      .addCase(fetchUser.rejected, (state) => {
-        state.loading = false;
+      .addCase(getUser.rejected, (state) => {
+        state.isLoading = false;
         state.isAuthChecked = true; // Даже если не авторизован, проверку завершили
       })
       .addCase(updateUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(updateUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.loading = false;
+        state.isLoading = false;
         state.user = action.payload;
       })
       .addCase(updateUser.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.error.message || 'Ошибка обновления профиля';
       })
       .addCase(logoutUser.fulfilled, (state) => {
@@ -134,12 +133,12 @@ const userSlice = createSlice({
   selectors: {
     selectUser: (state) => state.user,
     selectIsAuthChecked: (state) => state.isAuthChecked,
-    getLoading: (state) => state.loading,
+    getIsLoading: (state) => state.isLoading,
     getError: (state) => state.error
   }
 });
 
 export const { setAuthChecked } = userSlice.actions;
 export default userSlice;
-export const { selectUser, selectIsAuthChecked, getLoading, getError } =
+export const { selectUser, selectIsAuthChecked, getIsLoading, getError } =
   userSlice.selectors;

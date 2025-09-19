@@ -7,7 +7,7 @@ import {
   clearOrder,
   createOrder,
   getConstructorItems,
-  getOrderModalData,
+  getOrderData,
   getOrderRequest
 } from '../../services/burgerConstructorSlice';
 
@@ -18,7 +18,7 @@ export const BurgerConstructor: FC = () => {
 
   const constructorItems = useSelector(getConstructorItems);
   const orderRequest = useSelector(getOrderRequest);
-  const orderModalData = useSelector(getOrderModalData);
+  const orderModalData = useSelector(getOrderData);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;

@@ -5,7 +5,7 @@ import {
   PayloadAction
 } from '@reduxjs/toolkit';
 import { TIngredient, TConstructorIngredient, TOrder } from '@utils-types';
-import { orderBurgerApi } from '../utils/burger-api';
+import { getOrderByNumberApi, orderBurgerApi } from '../utils/burger-api';
 
 export type TStateBurgerConstructor = {
   constructorItems: {
@@ -13,7 +13,7 @@ export type TStateBurgerConstructor = {
     ingredients: TConstructorIngredient[];
   };
   orderRequest: boolean;
-  orderModalData: TOrder | null;
+  orderData: TOrder | null;
   loading: boolean;
   error: null | string | undefined;
 };
@@ -21,7 +21,7 @@ export type TStateBurgerConstructor = {
 const initialState: TStateBurgerConstructor = {
   constructorItems: { bun: null, ingredients: [] },
   orderRequest: false,
-  orderModalData: null,
+  orderData: null,
   loading: false,
   error: null
 };
@@ -31,6 +31,14 @@ export const createOrder = createAsyncThunk(
   async (data: string[]) => {
     const response = await orderBurgerApi(data);
     return response;
+  }
+);
+
+export const getOrderByNumber = createAsyncThunk(
+  'order/getOrderByNumber',
+  async (number: number) => {
+    const data = await getOrderByNumberApi(number);
+    return data.orders[0];
   }
 );
 
@@ -77,7 +85,7 @@ export const burgerConstructorSlice = createSlice({
       }
     },
     clearOrder: (state) => {
-      state.orderModalData = null;
+      state.orderData = null;
     }
   },
   extraReducers: (builder) => {
@@ -92,16 +100,28 @@ export const burgerConstructorSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orderRequest = false;
-        state.orderModalData = action.payload.order;
+        state.orderData = action.payload.order;
         state.constructorItems.bun = null;
         state.constructorItems.ingredients = [];
         state.error = null;
+      })
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(
+        getOrderByNumber.fulfilled,
+        (state, action: PayloadAction<TOrder>) => {
+          state.orderData = action.payload;
+        }
+      )
+      .addCase(getOrderByNumber.rejected, (state, action) => {
+        state.error = action.error.message || 'Не удалось получить заказ';
       });
   },
   selectors: {
     getConstructorItems: (state) => state.constructorItems,
     getOrderRequest: (state) => state.orderRequest,
-    getOrderModalData: (state) => state.orderModalData,
+    getOrderData: (state) => state.orderData,
     getLoading: (state) => state.loading,
     getError: (state) => state.error
   }
@@ -111,7 +131,7 @@ export default burgerConstructorSlice;
 export const {
   getConstructorItems,
   getOrderRequest,
-  getOrderModalData,
+  getOrderData,
   getLoading,
   getError
 } = burgerConstructorSlice.selectors;

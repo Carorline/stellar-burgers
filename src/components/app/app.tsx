@@ -18,7 +18,7 @@ import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { getIngredients } from '../../services/ingredientsSlice';
 import { ProtectedRoute } from '../ProtectedRoute';
-import { fetchUser, setAuthChecked } from 'src/services/userSlice';
+import { getUser, setAuthChecked } from '../../services/userSlice';
 
 const App = () => {
   const location = useLocation();
@@ -35,7 +35,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(fetchUser()).finally(() => dispatch(setAuthChecked(true)));
+    dispatch(getUser()).finally(() => dispatch(setAuthChecked(true)));
   }, [dispatch]);
 
   return (
