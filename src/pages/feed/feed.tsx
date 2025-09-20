@@ -10,7 +10,6 @@ import { getLoading } from '../../services/burgerConstructorSlice';
 export const Feed: FC = () => {
   const dispatch = useDispatch();
   const loading = useSelector(getLoading);
-  /** TODO: взять переменную из стора */
   const orders: TOrder[] = useSelector(getFeedOrders);
 
   useEffect(() => {

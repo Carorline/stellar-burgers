@@ -7,7 +7,6 @@ import { TUser } from '@utils-types';
 import { Preloader } from '@ui';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
   const dispatch = useDispatch();
   const user = useSelector(selectUser) as TUser;
   const loading = useSelector(getIsLoading);

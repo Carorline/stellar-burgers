@@ -6,16 +6,14 @@ import { useSelector } from 'react-redux';
 import { getIngredientsSelector } from '../../services/ingredientsSlice';
 import { useParams } from 'react-router-dom';
 import { getFeedOrders } from '../../services/feedSlice';
-import { useDispatch } from 'src/services/store';
+import { useDispatch } from '../../services/store';
 import {
   getOrderByNumber,
   getOrderData
 } from '../../services/burgerConstructorSlice';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
   const { number } = useParams();
-  const orders = useSelector(getFeedOrders); // Получаем список заказов из состояния Redux
   const dispatch = useDispatch();
 
   const orderData = useSelector(getOrderData);

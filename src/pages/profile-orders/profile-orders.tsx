@@ -1,5 +1,4 @@
 import { ProfileOrdersUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch } from '../../services/store';
 import { useSelector } from 'react-redux';
@@ -8,7 +7,6 @@ import { getIsLoading } from '../../services/userSlice';
 import { Preloader } from '@ui';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
   const dispatch = useDispatch();
   const orders = useSelector(getFeedOrders);
   const isLoading = useSelector(getIsLoading);
