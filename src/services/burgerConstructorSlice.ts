@@ -71,21 +71,30 @@ export const burgerConstructorSlice = createSlice({
     moveUpIngredient: (state, action: PayloadAction<number>) => {
       const index = action.payload;
       if (index > 0) {
-        const newIngredients = state.constructorItems.ingredients;
-        [(newIngredients[index - 1] = newIngredients[index])];
-        [newIngredients[index], newIngredients[index - 1]];
+        const ingredients = state.constructorItems.ingredients;
+        [ingredients[index - 1], ingredients[index]] = [
+          ingredients[index],
+          ingredients[index - 1]
+        ];
       }
     },
     moveDownIngredient: (state, action: PayloadAction<number>) => {
       const index = action.payload;
       if (index < state.constructorItems.ingredients.length - 1) {
-        const newIngredients = state.constructorItems.ingredients;
-        [(newIngredients[index + 1] = newIngredients[index])];
-        [newIngredients[index], newIngredients[index + 1]];
+        const ingredients = state.constructorItems.ingredients;
+        [ingredients[index + 1], ingredients[index]] = [
+          ingredients[index],
+          ingredients[index + 1]
+        ];
       }
     },
     clearOrder: (state) => {
       state.orderData = null;
+      state.error = null;
+    },
+    clearConstructor: (state) => {
+      state.constructorItems.bun = null;
+      state.constructorItems.ingredients = [];
     }
   },
   extraReducers: (builder) => {
@@ -141,5 +150,6 @@ export const {
   deleteIngredient,
   moveUpIngredient,
   moveDownIngredient,
-  clearOrder
+  clearOrder,
+  clearConstructor
 } = burgerConstructorSlice.actions;

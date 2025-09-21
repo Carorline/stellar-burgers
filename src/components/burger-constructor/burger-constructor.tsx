@@ -1,25 +1,40 @@
 import { FC, useMemo } from 'react';
+import { useEffect } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
 import {
   clearOrder,
+  clearConstructor,
   createOrder,
   getConstructorItems,
   getOrderData,
   getOrderRequest
 } from '../../services/burgerConstructorSlice';
+import { selectUser } from '../../services/userSlice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(clearOrder());
+  //   };
+  // }, [dispatch]);
+
   const constructorItems = useSelector(getConstructorItems);
   const orderRequest = useSelector(getOrderRequest);
   const orderModalData = useSelector(getOrderData);
+  const user = useSelector(selectUser);
 
   const onOrderClick = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
     if (!constructorItems.bun || orderRequest) return;
 
     const order: string[] = [
@@ -32,8 +47,8 @@ export const BurgerConstructor: FC = () => {
   };
 
   const closeOrderModal = () => {
+    dispatch(clearConstructor());
     dispatch(clearOrder());
-    navigate('/');
   };
 
   const price = useMemo(
