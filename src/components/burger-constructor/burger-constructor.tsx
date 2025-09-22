@@ -18,12 +18,6 @@ export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   return () => {
-  //     dispatch(clearOrder());
-  //   };
-  // }, [dispatch]);
-
   const constructorItems = useSelector(getConstructorItems);
   const orderRequest = useSelector(getOrderRequest);
   const orderModalData = useSelector(getOrderData);
