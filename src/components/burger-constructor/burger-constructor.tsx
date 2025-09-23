@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
 import {
   clearOrder,
-  clearConstructor,
   createOrder,
   getConstructorItems,
   getOrderData,
@@ -22,6 +21,10 @@ export const BurgerConstructor: FC = () => {
   const orderRequest = useSelector(getOrderRequest);
   const orderModalData = useSelector(getOrderData);
   const user = useSelector(selectUser);
+
+  useEffect(() => {
+    dispatch(clearOrder());
+  }, [dispatch]);
 
   const onOrderClick = () => {
     if (!user) {
@@ -41,7 +44,6 @@ export const BurgerConstructor: FC = () => {
   };
 
   const closeOrderModal = () => {
-    dispatch(clearConstructor());
     dispatch(clearOrder());
   };
 
