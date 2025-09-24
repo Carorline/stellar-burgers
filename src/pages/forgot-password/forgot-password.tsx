@@ -1,4 +1,4 @@
-import { FC, useState, SyntheticEvent } from 'react';
+import { FC, useState, SyntheticEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { forgotPasswordApi } from '@api';
@@ -21,6 +21,13 @@ export const ForgotPassword: FC = () => {
       })
       .catch((err) => setError(err));
   };
+
+  useEffect(() => {
+    // простая проверка по наличию refreshToken
+    if (localStorage.getItem('refreshToken')) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <ForgotPasswordUI
