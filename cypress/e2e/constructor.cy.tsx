@@ -1,10 +1,29 @@
-const baseUrl = Cypress.env('api');
+const baseUrl = Cypress.env('baseUrl');
 
-describe('Burger Constructor', () => {
+describe('Страница конструктора', () => {
   beforeEach(() => {
     cy.intercept('GET', `${baseUrl}/ingredients`, {
       fixture: 'ingredients.json'
-    }).as('getIngredients');
+    });
+    cy.intercept('GET', `${baseUrl}/auth/user`, {
+      fixture: 'user.json'
+    });
+    cy.intercept('POST', `${baseUrl}/orders`, { fixture: 'order.json' });
+
+    window.localStorage.setItem(
+      'refreshToken',
+      JSON.stringify('test-refreshToken')
+    );
+
+    cy.setCookie('accessToken', 'Bearer access-token');
+
+    cy.viewport(1300, 800);
+    cy.visit('/');
+  });
+
+  afterEach(function () {
+    cy.clearCookies();
+    cy.clearLocalStorage();
   });
 
   it('Тест добавления булки в конструктор', function () {
@@ -28,7 +47,7 @@ describe('Burger Constructor', () => {
       .contains('Биокотлета из марсианской Магнолии')
       .should('not.exist');
     cy.get('[data-cy=ingredient_constructor]')
-      .contains('Хрустящие минеральные кольца')
+      .contains('Соус фирменный Space Sauce')
       .should('not.exist');
     cy.get('[data-cy=main_ingredients]').contains('Добавить').click();
     cy.get('[data-cy=ingredient_constructor]')
@@ -36,7 +55,7 @@ describe('Burger Constructor', () => {
       .should('exist');
     cy.get('[data-cy=souce_ingredients]').contains('Добавить').click();
     cy.get('[data-cy=ingredient_constructor]')
-      .contains('Хрустящие минеральные кольца')
+      .contains('Соус фирменный Space Sauce')
       .should('exist');
   });
 });
