@@ -1,14 +1,14 @@
-const baseUrl = Cypress.env('baseUrl');
+const apiUrl = Cypress.env('apiUrl');
 
 describe('Страница конструктора', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${baseUrl}/ingredients`, {
+    cy.intercept('GET', `${apiUrl}/ingredients`, {
       fixture: 'ingredients.json'
     });
-    cy.intercept('GET', `${baseUrl}/auth/user`, {
+    cy.intercept('GET', `${apiUrl}/auth/user`, {
       fixture: 'user.json'
     });
-    cy.intercept('POST', `${baseUrl}/orders`, { fixture: 'order.json' });
+    cy.intercept('POST', `${apiUrl}/orders`, { fixture: 'order.json' });
 
     window.localStorage.setItem(
       'refreshToken',
