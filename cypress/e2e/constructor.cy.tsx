@@ -17,7 +17,6 @@ describe('Страница конструктора', () => {
 
     cy.setCookie('accessToken', 'Bearer access-token');
 
-    cy.viewport(1300, 800);
     cy.visit('/');
   });
 
@@ -86,5 +85,34 @@ describe('Страница конструктора', () => {
       .should('exist')
       .click('topRight', { force: true });
     cy.get('[data-cy=modal]').should('not.exist');
+  });
+
+  it('Тест создания заказа', function () {
+    cy.get('[data-cy=bun_ingredients]').contains('Добавить').click();
+    cy.get('[data-cy=main_ingredients]').contains('Добавить').click();
+    cy.get('[data-cy=souce_ingredients]').contains('Добавить').click();
+
+    cy.get('[data-cy=order_button]')
+      .contains('Оформить заказ')
+      .should('exist')
+      .click();
+
+    cy.get('[data-cy=order_number]').contains('593104').should('exist');
+
+    cy.get('[data-cy=close_button]').click();
+    cy.get('[data-cy=modal]').should('not.exist');
+
+    cy.get('[data-cy=constructor]').should(
+      'not.contain',
+      'Краторная булка N-200i'
+    );
+    cy.get('[data-cy=ingredient_constructor]').should(
+      'not.contain',
+      'Соус фирменный Space Sauce'
+    );
+    cy.get('[data-cy=ingredient_constructor]').should(
+      'not.contain',
+      'Биокотлета из марсианской Магнолии'
+    );
   });
 });
