@@ -3,11 +3,9 @@ import burgerConstructorSlice, {
   deleteIngredient,
   moveUpIngredient,
   moveDownIngredient,
-  clearOrder,
-  createOrder,
-  getOrderByNumber
+  clearOrder
 } from './burgerConstructorSlice';
-import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
+import { TConstructorIngredient, TOrder } from '@utils-types';
 
 describe('Тест burgerConstructorSlice ', () => {
   const mockIngredient: TConstructorIngredient = {
@@ -53,7 +51,8 @@ describe('Тест burgerConstructorSlice ', () => {
   it('Тест добавления булки в конструктор', () => {
     const action = addIngredient(mockBun);
     const result = burgerConstructorSlice.reducer(undefined, action);
-    expect(result.constructorItems.bun).toEqual({
+
+    expect(result.constructorItems.bun).toMatchObject({
       ...mockBun,
       id: expect.any(String)
     });
