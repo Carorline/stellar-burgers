@@ -1,4 +1,12 @@
 const apiUrl = Cypress.env('apiUrl');
+const constructorBunUp = '[data-cy=bun_up_constructor]';
+const constructorBunDown = '[data-cy=bun_down_constructor]';
+const ingredientsBun = '[data-cy=bun_ingredients]';
+const constructorIngredient = '[data-cy=ingredient_constructor]';
+const ingredientsMain = '[data-cy=main_ingredients]';
+const ingredientsSouce = '[data-cy=souce_ingredients]';
+const modal = '[data-cy=modal]';
+const closeButton = '[data-cy=close_button]';
 
 describe('Страница конструктора', () => {
   beforeEach(() => {
@@ -26,71 +34,61 @@ describe('Страница конструктора', () => {
   });
 
   it('Тест добавления булки в конструктор', function () {
-    cy.get('[data-cy=bun_up_constructor]')
+    cy.get(constructorBunUp)
       .contains('Краторная булка N-200i')
       .should('not.exist');
-    cy.get('[data-cy=bun_down_constructor]')
+    cy.get(constructorBunDown)
       .contains('Краторная булка N-200i')
       .should('not.exist');
-    cy.get('[data-cy=bun_ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=bun_up_constructor]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
-    cy.get('[data-cy=bun_down_constructor]')
+    cy.get(ingredientsBun).contains('Добавить').click();
+    cy.get(constructorBunUp).contains('Краторная булка N-200i').should('exist');
+    cy.get(constructorBunDown)
       .contains('Краторная булка N-200i')
       .should('exist');
   });
 
   it('Тест добавления ингредиента в конструктор', function () {
-    cy.get('[data-cy=ingredient_constructor]')
+    cy.get(constructorIngredient)
       .contains('Биокотлета из марсианской Магнолии')
       .should('not.exist');
-    cy.get('[data-cy=ingredient_constructor]')
+    cy.get(constructorIngredient)
       .contains('Соус фирменный Space Sauce')
       .should('not.exist');
-    cy.get('[data-cy=main_ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=ingredient_constructor]')
+    cy.get(ingredientsMain).contains('Добавить').click();
+    cy.get(constructorIngredient)
       .contains('Биокотлета из марсианской Магнолии')
       .should('exist');
-    cy.get('[data-cy=souce_ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=ingredient_constructor]')
+    cy.get(ingredientsSouce).contains('Добавить').click();
+    cy.get(constructorIngredient)
       .contains('Соус фирменный Space Sauce')
       .should('exist');
   });
 
   it('Тест открытия модального окна ингредиента', function () {
-    cy.get('[data-cy=modal]').should('not.exist');
-    cy.get('[data-cy=bun_ingredients]')
-      .contains('Краторная булка N-200i')
-      .click();
-    cy.get('[data-cy=modal]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
+    cy.get(modal).should('not.exist');
+    cy.get(ingredientsBun).contains('Краторная булка N-200i').click();
+    cy.get(modal).contains('Краторная булка N-200i').should('exist');
   });
 
   it('Тест закрытия модального окна с помощью крестика', function () {
-    cy.get('[data-cy=bun_ingredients]')
-      .contains('Краторная булка N-200i')
-      .click();
-    cy.get('[data-cy=close_button]').click();
-    cy.get('[data-cy=modal]').should('not.exist');
+    cy.get(ingredientsBun).contains('Краторная булка N-200i').click();
+    cy.get(closeButton).click();
+    cy.get(modal).should('not.exist');
   });
 
   it('Тест закрытия модального окна при клике на overlay', function () {
-    cy.get('[data-cy=bun_ingredients]')
-      .contains('Краторная булка N-200i')
-      .click();
-    cy.get('[data-cy=modal]').should('exist');
+    cy.get(ingredientsBun).contains('Краторная булка N-200i').click();
+    cy.get(modal).should('exist');
     cy.get('[data-cy=overlay]')
       .should('exist')
       .click('topRight', { force: true });
-    cy.get('[data-cy=modal]').should('not.exist');
+    cy.get(modal).should('not.exist');
   });
 
   it('Тест создания заказа', function () {
-    cy.get('[data-cy=bun_ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=main_ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=souce_ingredients]').contains('Добавить').click();
+    cy.get(ingredientsBun).contains('Добавить').click();
+    cy.get(ingredientsMain).contains('Добавить').click();
+    cy.get(ingredientsSouce).contains('Добавить').click();
 
     cy.get('[data-cy=order_button]')
       .contains('Оформить заказ')
@@ -99,18 +97,18 @@ describe('Страница конструктора', () => {
 
     cy.get('[data-cy=order_number]').contains('593104').should('exist');
 
-    cy.get('[data-cy=close_button]').click();
-    cy.get('[data-cy=modal]').should('not.exist');
+    cy.get(closeButton).click();
+    cy.get(modal).should('not.exist');
 
     cy.get('[data-cy=constructor]').should(
       'not.contain',
       'Краторная булка N-200i'
     );
-    cy.get('[data-cy=ingredient_constructor]').should(
+    cy.get(constructorIngredient).should(
       'not.contain',
       'Соус фирменный Space Sauce'
     );
-    cy.get('[data-cy=ingredient_constructor]').should(
+    cy.get(constructorIngredient).should(
       'not.contain',
       'Биокотлета из марсианской Магнолии'
     );
